@@ -30,7 +30,8 @@ public:
 private:
     ofxAssimpModelLoader model;
     ofMesh mesh;
-    string filename; 
+    string filename;
+    ofSoundPlayer mySound;
 
 };
 
