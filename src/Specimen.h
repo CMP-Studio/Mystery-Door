@@ -20,6 +20,7 @@ using namespace wng;
 class Specimen {
     
 public:
+    static float vol; 
     void setup(string fileN);
     void load();
     void draw();

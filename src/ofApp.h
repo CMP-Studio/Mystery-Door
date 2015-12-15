@@ -23,7 +23,8 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
-    void exit(); 
+    void exit();
+    
     vector<string> split(const std::string &s, char delim);
     
     vector<Specimen> animals;
@@ -40,5 +41,15 @@ public:
 	ofxColorSlider color;
     
     bool hideGui;
+    
+    ofArduino	ard;
+	bool		bSetupArduino;			// flag variable for setting up arduino once
+    
+    bool isLoaded; 
+    
+private:
+    void setupArduino(const int & version);
+    void digitalPinChanged(const int & pinNum);
+    void updateArduino();
 
 };
