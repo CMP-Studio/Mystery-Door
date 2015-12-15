@@ -1,10 +1,11 @@
 #pragma once
 
 #include "ofMain.h"
-
-
+#include "ofxGui.h"
 #include "Specimen.h"
 #include "ofxCameraSaveLoad.h"
+
+
 
 class ofApp : public ofBaseApp{
 
@@ -31,5 +32,13 @@ public:
     ofLight light;
     ofxCsv analytics;
    
+    ofSerial serial;
+    
+    ofxPanel gui;
+    
+    ofxFloatSlider vol;
+	ofxColorSlider color;
+    
+    bool hideGui;
 
 };

@@ -1,7 +1,6 @@
 #include "ofApp.h"
 
 
-
 //--------------------------------------------------------------
 void ofApp::setup(){
     
@@ -12,6 +11,7 @@ void ofApp::setup(){
     ofDirectory dir("");
     dir.allowExt("ply");
     dir.listDir();
+    
     // populates a list of specimen based off the list of ply files
     for(int i=0; i<dir.size(); i++){
         Specimen temp = *new Specimen();
@@ -22,29 +22,57 @@ void ofApp::setup(){
     animalPos =0;
     animals.at(animalPos).load();
     
-    glShadeModel(GL_SMOOTH);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_DEPTH_TEST);
-    light.setAmbientColor(ofFloatColor(0,0,1));
+    //glShadeModel(GL_SMOOTH);
+    //glEnable(GL_NORMALIZE);
+    ofEnableDepthTest();
+    //glEnable(GL_DEPTH_TEST);
+    //light.setAmbientColor(ofFloatColor(0,0,1));
     light.enable();
-    ofEnableSeparateSpecularLight();
-    
-    
-    
+    //ofEnableSeparateSpecularLight();
+
     ofxLoadCamera(cam, "ofEasyCamSettings");
     cam.enableMouseInput();
+    
+    serial.setup();
+    
+    gui.setup();
+    gui.add(vol.setup("volume",.5,0,1));
+    gui.add(color.setup("color", ofColor(100, 100, 140), ofColor(0, 0), ofColor(255, 255)));
+    gui.setDefaultTextColor(ofColor(255));
+    hideGui=false;
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+    int myByte = serial.readByte();
+    if ( myByte == OF_SERIAL_NO_DATA )
+        printf("no data was read");
+    else if ( myByte == OF_SERIAL_ERROR )
+        printf("an error occurred");
+    else
+        printf("%d \n", myByte);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    /*
+    light.enable();
+    ofEnableDepthTest();
+    cam.end();
+    light.disable();
+    ofDisableDepthTest();
+    */
+    
+    
+    ofEnableDepthTest();
     cam.begin();
     animals.at(animalPos).draw();
     cam.end();
+    ofDisableDepthTest();
+    
+    if(!hideGui){
+        gui.draw();
+    }
 }
 
 //--------------------------------------------------------------
