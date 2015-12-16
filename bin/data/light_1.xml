@@ -1,0 +1,11 @@
+<group>
+	<Light_Controls_1/>
+	<pos_x>317</pos_x>
+	<pos_y>476</pos_y>
+	<pos_z>1180</pos_z>
+	<color_ambient>137, 94, 140, 255</color_ambient>
+	<color_Specular>71, 100, 140, 255</color_Specular>
+	<color_Diffuse>144, 102, 117, 255</color_Diffuse>
+<group/>
+<draw_light>0</draw_light>
+</group>

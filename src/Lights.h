@@ -12,7 +12,7 @@
 class Lights {
     
 public:
-    void setup();
+    void setup(int ID);
     void updateLights();
     void drawGui();
     void fadeUp();
@@ -20,12 +20,16 @@ public:
     void flicker();
     void enable();
     void disable();
+    void saveGui();
     
 private:
+    int uniqueID; 
+    
     ofLight light;
+
+    ofxLabel label; 
     ofxPanel lightGui;
-    
-    
+
     ofxColorSlider colorAmb;
     ofxColorSlider colorSpec;
     ofxColorSlider colorDiff;
@@ -34,4 +38,5 @@ private:
     ofxIntSlider posY;
     ofxIntSlider posZ;
     
+    ofxToggle drawLight;
 };

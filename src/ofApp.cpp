@@ -23,7 +23,7 @@ void ofApp::setup(){
     //light.setSpotlightCutOff(.2f);
     //light.setSpotConcentration(.8f);
     light = *new Lights();
-    light.setup();
+    light.setup(1);
     
     ofEnableSeparateSpecularLight();
 
@@ -100,6 +100,7 @@ void ofApp::update(){
         else{
             cam.disableMouseInput();
         }
+        light.updateLights();
     
     
     }
@@ -295,6 +296,7 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 void ofApp::exit(){
     ofxSaveCamera(cam, "ofEasyCamSettings");
     gui.saveToFile("settings.xml");
+    light.saveGui();
 }
 
 vector<string> ofApp::split(const std::string &s, char delim) {

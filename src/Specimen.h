@@ -27,6 +27,7 @@ public:
     void load();
     void draw();
     void unload();
+    
     string commonName;
     string region;
     int date;
