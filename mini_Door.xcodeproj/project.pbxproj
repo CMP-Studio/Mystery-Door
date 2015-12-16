@@ -23,6 +23,8 @@
 		0BF256D51C207B8300A411E0 /* ofxCsv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BF256D31C207B8300A411E0 /* ofxCsv.cpp */; };
 		0BF256DA1C207B8800A411E0 /* ofxCameraSaveLoad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BF256D81C207B8800A411E0 /* ofxCameraSaveLoad.cpp */; };
 		0BF256DE1C207C0900A411E0 /* Specimen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BF256DC1C207C0900A411E0 /* Specimen.cpp */; };
+		0BF256EB1C21C40B00A411E0 /* ofxDmx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BF256E91C21C40B00A411E0 /* ofxDmx.cpp */; };
+		0BF256F11C21F7EA00A411E0 /* Lights.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BF256EF1C21F7EA00A411E0 /* Lights.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -144,6 +146,10 @@
 		0BF256D91C207B8800A411E0 /* ofxCameraSaveLoad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxCameraSaveLoad.h; sourceTree = "<group>"; };
 		0BF256DC1C207C0900A411E0 /* Specimen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Specimen.cpp; sourceTree = "<group>"; };
 		0BF256DD1C207C0900A411E0 /* Specimen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Specimen.h; sourceTree = "<group>"; };
+		0BF256E91C21C40B00A411E0 /* ofxDmx.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxDmx.cpp; sourceTree = "<group>"; };
+		0BF256EA1C21C40B00A411E0 /* ofxDmx.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxDmx.h; sourceTree = "<group>"; };
+		0BF256EF1C21F7EA00A411E0 /* Lights.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Lights.cpp; sourceTree = "<group>"; };
+		0BF256F01C21F7EA00A411E0 /* Lights.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lights.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -377,6 +383,24 @@
 			path = ../../../addons/ofxCameraSaveLoad/src;
 			sourceTree = "<group>";
 		};
+		0BF256E71C21C40B00A411E0 /* ofxDmx */ = {
+			isa = PBXGroup;
+			children = (
+				0BF256E81C21C40B00A411E0 /* src */,
+			);
+			name = ofxDmx;
+			sourceTree = "<group>";
+		};
+		0BF256E81C21C40B00A411E0 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				0BF256E91C21C40B00A411E0 /* ofxDmx.cpp */,
+				0BF256EA1C21C40B00A411E0 /* ofxDmx.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxDmx/src;
+			sourceTree = "<group>";
+		};
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
@@ -384,6 +408,7 @@
 				0BF254D61C2074E200A411E0 /* ofxGui */,
 				0BF256D11C207B8300A411E0 /* ofxCsv */,
 				0BF256D61C207B8800A411E0 /* ofxCameraSaveLoad */,
+				0BF256E71C21C40B00A411E0 /* ofxDmx */,
 			);
 			name = addons;
 			sourceTree = "<group>";
@@ -455,6 +480,8 @@
 				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
 				0BF256DC1C207C0900A411E0 /* Specimen.cpp */,
 				0BF256DD1C207C0900A411E0 /* Specimen.h */,
+				0BF256EF1C21F7EA00A411E0 /* Lights.cpp */,
+				0BF256F01C21F7EA00A411E0 /* Lights.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -562,6 +589,8 @@
 				0BF256D51C207B8300A411E0 /* ofxCsv.cpp in Sources */,
 				0BF254EC1C2074E200A411E0 /* ofxLabel.cpp in Sources */,
 				0BF254EF1C2074E200A411E0 /* ofxSliderGroup.cpp in Sources */,
+				0BF256EB1C21C40B00A411E0 /* ofxDmx.cpp in Sources */,
+				0BF256F11C21F7EA00A411E0 /* Lights.cpp in Sources */,
 				0BF254881C1B362100A411E0 /* ofxAssimpTexture.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				0BF254ED1C2074E200A411E0 /* ofxPanel.cpp in Sources */,

@@ -1,5 +1,12 @@
 <group>
-	<volume>0.5</volume>
-	<color_ambient>132, 75, 225, 255</color_ambient>
+	<volume>0.89</volume>
+	<color_ambient>134, 41, 33, 255</color_ambient>
 <group/>
+<vol_door_open>0.61</vol_door_open>
+	<vol_door_closed>0.38</vol_door_closed>
+<pos_z>0</pos_z>
+	<pos_y>668</pos_y>
+<texture_models>1</texture_models>
+	<drift>0</drift>
+	<camera_input>0</camera_input>
 </group>

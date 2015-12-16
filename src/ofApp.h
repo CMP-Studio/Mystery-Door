@@ -4,7 +4,8 @@
 #include "ofxGui.h"
 #include "Specimen.h"
 #include "ofxCameraSaveLoad.h"
-
+#include "ofxDmx.h"
+#include "Lights.h"
 
 
 class ofApp : public ofBaseApp{
@@ -23,14 +24,21 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
+    void loadModels(); 
     void exit();
+    void drawText(string text, int x, int y, bool isCentered);
+    
+    void doorOpened();
+    void doorClosed();
+    
+    void textureChanged(); 
     
     vector<string> split(const std::string &s, char delim);
     
     vector<Specimen> animals;
     int animalPos; 
     ofEasyCam cam;
-    ofLight light;
+    //ofLight light;
     ofxCsv analytics;
    
     ofSerial serial;
@@ -38,14 +46,22 @@ public:
     ofxPanel gui;
     
     ofxFloatSlider vol;
-	ofxColorSlider color;
+    ofxFloatSlider volClosed;
+    ofxToggle textureDraw;
+    ofxToggle drift;
+    ofxToggle allowCameraInput;
     
     bool hideGui;
     
     ofArduino	ard;
 	bool		bSetupArduino;			// flag variable for setting up arduino once
     
-    bool isLoaded; 
+    bool isLoadedScreen;
+    bool isLoadingModels;
+    
+    ofTrueTypeFont font;
+    
+    Lights light; 
     
 private:
     void setupArduino(const int & version);

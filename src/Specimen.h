@@ -20,7 +20,9 @@ using namespace wng;
 class Specimen {
     
 public:
-    static float vol; 
+    static float vol;
+    static bool drawTex;
+    static bool drift;
     void setup(string fileN);
     void load();
     void draw();
@@ -33,6 +35,7 @@ private:
     ofMesh mesh;
     string filename;
     ofSoundPlayer mySound;
+    float perlinSeed;
 
 };
 
