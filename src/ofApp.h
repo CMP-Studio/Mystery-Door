@@ -4,7 +4,6 @@
 #include "ofxGui.h"
 #include "Specimen.h"
 #include "ofxCameraSaveLoad.h"
-#include "ofxDmx.h"
 #include "Lights.h"
 
 
@@ -61,7 +60,17 @@ public:
     
     ofTrueTypeFont font;
     
-    Lights light; 
+    Lights bulb1;
+    Lights bulb2;
+    
+    ofLight guiLight;
+    ofMaterial materialDrawText;
+    ofMaterial materialDrawGui;
+    ofMaterial materialModel;
+    ofxIntSlider realLightMin;
+    ofxIntSlider realLightMax;
+    
+    
     
 private:
     void setupArduino(const int & version);

@@ -10,29 +10,29 @@
 	<string>mini_Door</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>6663513B-D00B-48F5-9655-783562547B54</key>
+		<key>7DD4DF60EC61A9666FE5BBCD3FD1DD5A1E861D77</key>
 		<string>https://github.com/CMP-Studio/Mystery-Door.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>mini_Door.xcodeproj/project.xcworkspace</string>
+	<string>mini_Door.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>6663513B-D00B-48F5-9655-783562547B54</key>
+		<key>7DD4DF60EC61A9666FE5BBCD3FD1DD5A1E861D77</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/CMP-Studio/Mystery-Door.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>6663513B-D00B-48F5-9655-783562547B54</string>
+	<string>7DD4DF60EC61A9666FE5BBCD3FD1DD5A1E861D77</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>6663513B-D00B-48F5-9655-783562547B54</string>
+			<string>7DD4DF60EC61A9666FE5BBCD3FD1DD5A1E861D77</string>
 			<key>IDESourceControlWCCName</key>
 			<string>Mystery-Door</string>
 		</dict>

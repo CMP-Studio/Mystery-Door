@@ -1,0 +1,16 @@
+<group>
+	<Light_Controls_0/>
+	<draw_light>0</draw_light>
+	<pos_x>0</pos_x>
+	<pos_y>0</pos_y>
+	<pos_z>0</pos_z>
+	<Smooth_flicker>0</Smooth_flicker>
+	<Min_flicker>0.5</Min_flicker>
+	<Max_flicker>0.5</Max_flicker>
+	<Speed_of_flicker>0.5</Speed_of_flicker>
+	<Speed_of_fade>0.5</Speed_of_fade>
+	<color_ambient>100, 100, 140, 255</color_ambient>
+	<color_Specular>100, 100, 140, 255</color_Specular>
+	<color_Diffuse>100, 100, 140, 255</color_Diffuse>
+<group/>
+</group>

@@ -7,11 +7,16 @@
 //
 #include "ofMain.h"
 #include "ofxGui.h"
+#include "ofxDmx.h"
 
 //#include "ofxGui.h"
 class Lights {
     
 public:
+    static ofxDmx dmx;
+    static int dmxLightMin;
+    static int dmxLightMax;
+    
     void setup(int ID);
     void updateLights();
     void drawGui();
@@ -21,8 +26,13 @@ public:
     void enable();
     void disable();
     void saveGui();
+    Boolean isFlicker;
+    Boolean isFadeOn;
+    float fadePercent; 
     
 private:
+    float noiseSeed;
+    
     int uniqueID; 
     
     ofLight light;
@@ -39,4 +49,10 @@ private:
     ofxIntSlider posZ;
     
     ofxToggle drawLight;
+    
+    ofxFloatSlider minimumFlicker;
+    ofxFloatSlider maximumFlicker;
+    ofxFloatSlider speedOfFlicker;
+    ofxFloatSlider speedOfFade;
+    ofxToggle smoothFlicker;
 };

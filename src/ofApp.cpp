@@ -4,65 +4,52 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    analytics.loadFile(ofToDataPath("analytics.csv"));
-    //csv.loadFile(ofToDataPath(filename + ".csv"));
-    
-
-    
-    
+    // set up for loading screen
     isLoadedScreen = false;
     isLoadingModels = false;
     
-
-    
-    glShadeModel(GL_SMOOTH);
-    glEnable(GL_NORMALIZE);
-    //ofEnableDepthTest();
+    // load in analystics
+    analytics.loadFile(ofToDataPath("analytics.csv"));
+ 
+    // So the 3D models work well in the lighting
     glEnable(GL_DEPTH_TEST);
-    //light.setSpotlight();
-    //light.setSpotlightCutOff(.2f);
-    //light.setSpotConcentration(.8f);
-    light = *new Lights();
-    light.setup(1);
-    
     ofEnableSeparateSpecularLight();
-
+    
+    // set up lights
+    bulb1.setup(1);
+    //bulb2.setup(2);
+    bulb1.dmx.connect("tty.usbserial-EN175083");
+    
+    
+    //load things
     ofxLoadCamera(cam, "ofEasyCamSettings");
-    cam.enableMouseInput();
+    font.loadFont("PT.ttf", 20);
     
-    //serial.setup();
-    
-    
-    
+    //gui setup
     gui.setup();
-        
     gui.add(vol.setup("vol door open",.5,0,1));
     gui.add(volClosed.setup("vol door closed",.5,0,1));
     gui.add(textureDraw.setup("texture models", true));
     gui.add(drift.setup("drift", false));
     gui.add(allowCameraInput.setup("camera input", false));
-    
-    
-    
-    hideGui=false;
-    
-    
-    //arduino
-    // replace the string below with the serial port for your Arduino board
-    // you can get this from the Arduino application or via command line
-    // for OSX, in your terminal type "ls /dev/tty.*" to get a list of serial devices
-	ard.connect("/dev/cu.usbmodem1451", 57600);
-	
-	// listen for EInitialized notification. this indicates that
-	// the arduino is ready to receive commands and it is safe to
-	// call setupArduino()
-	ofAddListener(ard.EInitialized, this, &ofApp::setupArduino);
-	bSetupArduino	= false;	// flag so we setup arduino when its ready, you don't need to touch this :)
-
+    gui.add(realLightMin.setup("real light min: ",0,0,255));
+    gui.add(realLightMax.setup("real light max: ",255,0,255));
+    hideGui=true;
     gui.loadFromFile("settings.xml");
     
-    font.loadFont("PT.ttf", 20);
+    //arduino
+	ard.connect("/dev/cu.usbmodem1451", 57600);
+	ofAddListener(ard.EInitialized, this, &ofApp::setupArduino);
+	bSetupArduino	= false;
     
+    // materials for the text and the model. Changes their coloring and how it is effected by the lights
+    materialDrawText.setEmissiveColor(ofFloatColor(1,1,1));
+    materialModel.setShininess(.8f);
+    materialModel.setSpecularColor(ofFloatColor(.2f,.2f,.3f));
+    materialModel.setEmissiveColor(ofFloatColor(0,0,0));
+    
+    // light so that the gui is always in full brightness
+    guiLight.setAmbientColor(ofFloatColor(1,1,1));
 }
 
 
@@ -90,8 +77,10 @@ void ofApp::loadModels(){
 void ofApp::update(){
     
     
+    
     if(isLoadingModels){
         updateArduino();
+        if(!hideGui){
         animals.at(0).drawTex = textureDraw;
         animals.at(0).drift = drift;
         if(allowCameraInput){
@@ -100,9 +89,12 @@ void ofApp::update(){
         else{
             cam.disableMouseInput();
         }
-        light.updateLights();
-    
-    
+            bulb1.dmxLightMin = realLightMin;
+            bulb1.dmxLightMax = realLightMax;
+        }
+        bulb1.updateLights();
+        bulb1.dmx.update(); 
+        //bulb2.updateLights();
     }
     else{
     }
@@ -160,6 +152,10 @@ void ofApp::digitalPinChanged(const int & pinNum) {
 
 
 void ofApp::doorOpened(){
+    bulb1.fadePercent =0;
+    bulb1.isFadeOn = true;
+    //bulb2.fadePercent =0;
+    //bulb2.isFadeOn = true;
     animals.at(0).vol = vol;
 }
 
@@ -189,22 +185,35 @@ void ofApp::doorClosed(){
 }
 
 void ofApp::draw(){
-
+    
+    ofBackground(0);
     if(isLoadingModels){
     
-    
+        
+        bulb1.enable();
+        //bulb2.enable();
     cam.begin();
-    animals.at(animalPos).draw();
+    materialModel.begin();
+        animals.at(animalPos).draw(); 
+    materialModel.end();
     cam.end();
     
-    
+    materialDrawText.begin();
+    drawText(animals.at(animalPos).commonName +"\n" +animals.at(animalPos).region +"\n" + ofToString(animals.at(animalPos).date)  , 30,  30, false);
+    materialDrawText.end();
+        bulb1.disable();
+        //bulb2.disable();
+        
     if(!hideGui){
+        guiLight.enable();
         ofDisableDepthTest();
         ofDisableSeparateSpecularLight();
         gui.draw();
-        light.drawGui(); 
+        bulb1.drawGui();
+        //bulb2.drawGui();
         ofEnableSeparateSpecularLight();
         ofEnableDepthTest();
+        guiLight.disable();
     }
     
     
@@ -218,6 +227,7 @@ void ofApp::draw(){
         drawText("loading models... Please wait", ofGetWidth()/2,  ofGetHeight()/2, false);
         loadModels();
     }
+    
   
 }
 
@@ -233,7 +243,7 @@ void ofApp::drawText(string text, int x, int y, bool isCentered){
     }
     else{
         ofPushMatrix();
-        ofTranslate( x, y);
+        ofTranslate( x + font.getLineHeight()/2, y);
         ofRotate(-90, 0, 0, 1);
         ofScale(-1, 1,1);
         font.drawString(text,0, 0);
@@ -247,6 +257,10 @@ void ofApp::keyPressed(int key){
    
     if (key =='s'){
         doorClosed();
+        doorOpened();
+    }
+    if (key =='h'){
+        hideGui = !hideGui;
     }
     
 }
@@ -296,7 +310,8 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 void ofApp::exit(){
     ofxSaveCamera(cam, "ofEasyCamSettings");
     gui.saveToFile("settings.xml");
-    light.saveGui();
+    bulb1.saveGui();
+    //bulb2.saveGui();
 }
 
 vector<string> ofApp::split(const std::string &s, char delim) {

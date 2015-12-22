@@ -37,7 +37,6 @@ void Specimen::draw(){
     }
     
     if(drift){
-        ofLog()<< "I am in";
         perlinSeed += .001f;
         float rotationX =ofMap(ofNoise(perlinSeed,1), 0,1,-10,10);
         ofRotate(rotationX, 1, 0, 0);
@@ -46,6 +45,7 @@ void Specimen::draw(){
     }
     mySound.setVolume(vol);
     mesh.draw();
+    //mesh.norm
 }
 
 

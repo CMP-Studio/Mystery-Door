@@ -1,11 +1,16 @@
 <group>
 	<Light_Controls_1/>
-	<pos_x>317</pos_x>
-	<pos_y>476</pos_y>
-	<pos_z>1180</pos_z>
-	<color_ambient>137, 94, 140, 255</color_ambient>
-	<color_Specular>71, 100, 140, 255</color_Specular>
-	<color_Diffuse>144, 102, 117, 255</color_Diffuse>
+	<pos_x>752</pos_x>
+	<pos_y>683</pos_y>
+	<pos_z>760</pos_z>
+	<color_ambient>0, 0, 0, 255</color_ambient>
+	<color_Specular>200, 175, 171, 255</color_Specular>
+	<color_Diffuse>252, 236, 255, 255</color_Diffuse>
 <group/>
 <draw_light>0</draw_light>
+<Smooth_flicker>1</Smooth_flicker>
+	<Min_flicker>0</Min_flicker>
+	<Max_flicker>0.905</Max_flicker>
+	<Speed_of_flicker>0.535</Speed_of_flicker>
+	<Speed_of_fade>0.085</Speed_of_fade>
 </group>
