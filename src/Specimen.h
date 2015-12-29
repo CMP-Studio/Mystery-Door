@@ -9,6 +9,7 @@
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofxCsv.h"
+#include "fadeTextIn.h"
 
 using namespace wng;
 
@@ -27,17 +28,28 @@ public:
     void load();
     void draw();
     void unload();
+    void drawText(bool isCentered, int x, int y);
     
     string commonName;
     string region;
     int date;
 private:
+    
+    fadeTextIn dateFade;
+    fadeTextIn nameFade;
+    fadeTextIn regFade;
+    
+    
     ofxAssimpModelLoader model;
     ofMesh mesh;
     string filename;
     ofSoundPlayer mySound;
     float perlinSeed;
-
+    
+    int timeOpened;
+    int waitTime1;
+    int waitTime2;
+    int waitTime3;
 };
 
 #endif /* defined(__mysteryDoor1__Specimen__) */

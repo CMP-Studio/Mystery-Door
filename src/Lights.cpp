@@ -59,9 +59,11 @@ void Lights::updateLights(){
         if (fadePercent<1){
             float flickering=0;
             
+            /*
             if (isFlicker){
                 flickering = ofMap(ofNoise(noiseSeed),0,1,-.2f, .2f);
             }
+             */
         
             ca.lerp(b, 1-fadePercent + flickering);
             cs.lerp(b, 1-fadePercent + flickering);

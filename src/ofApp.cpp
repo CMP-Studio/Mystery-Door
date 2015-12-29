@@ -27,13 +27,13 @@ void ofApp::setup(){
     
     //gui setup
     gui.setup();
-    gui.add(vol.setup("vol door open",.5,0,1));
-    gui.add(volClosed.setup("vol door closed",.5,0,1));
-    gui.add(textureDraw.setup("texture models", true));
+    gui.add(vol.setup("vol_door_open",.5,0,1));
+    gui.add(volClosed.setup("vol_door_closed",.5,0,1));
+    gui.add(textureDraw.setup("texture_models", true));
     gui.add(drift.setup("drift", false));
-    gui.add(allowCameraInput.setup("camera input", false));
-    gui.add(realLightMin.setup("real light min: ",0,0,255));
-    gui.add(realLightMax.setup("real light max: ",255,0,255));
+    gui.add(allowCameraInput.setup("camera_input", false));
+    gui.add(realLightMin.setup("real_light_min",0,0,255));
+    gui.add(realLightMax.setup("real_light_max",255,0,255));
     hideGui=true;
     gui.loadFromFile("settings.xml");
     
@@ -43,7 +43,10 @@ void ofApp::setup(){
 	bSetupArduino	= false;
     
     // materials for the text and the model. Changes their coloring and how it is effected by the lights
-    materialDrawText.setEmissiveColor(ofFloatColor(1,1,1));
+    //materialDrawText.setEmissiveColor(ofFloatColor(1,1,1));
+    
+    
+    
     materialModel.setShininess(.8f);
     materialModel.setSpecularColor(ofFloatColor(.2f,.2f,.3f));
     materialModel.setEmissiveColor(ofFloatColor(0,0,0));
@@ -157,6 +160,7 @@ void ofApp::doorOpened(){
     //bulb2.fadePercent =0;
     //bulb2.isFadeOn = true;
     animals.at(0).vol = vol;
+
 }
 
 
@@ -175,6 +179,8 @@ void ofApp::doorClosed(){
         animalPos =0;
     }
     animals.at(animalPos).load();
+    bulb1.fadePercent =0;
+    
     int row2 = analytics.numRows;
     analytics.setString(row2, 0, "opened");
     analytics.setString(row2, 1, ofGetTimestampString());
@@ -199,7 +205,7 @@ void ofApp::draw(){
     cam.end();
     
     materialDrawText.begin();
-    drawText(animals.at(animalPos).commonName +"\n" +animals.at(animalPos).region +"\n" + ofToString(animals.at(animalPos).date)  , 30,  30, false);
+        animals.at(animalPos).drawText(false, 10, 10);
     materialDrawText.end();
         bulb1.disable();
         //bulb2.disable();
@@ -249,7 +255,6 @@ void ofApp::drawText(string text, int x, int y, bool isCentered){
         font.drawString(text,0, 0);
         ofPopMatrix();
     }
-    
 }
 
 //--------------------------------------------------------------

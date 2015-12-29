@@ -24,6 +24,17 @@ void Specimen::setup(string fileN){
 	mesh = model.getMesh(0);
     perlinSeed =0;
     
+    ofLog()<< "1";
+    regFade.setup(region, 8000, 30,"PT.ttf" );
+    ofLog()<< "2";
+    dateFade.setup(ofToString(date), 8000, 30,"PT.ttf" );
+    ofLog()<< "3";
+    nameFade.setup(commonName, 8000, 30,"PT.ttf" );
+    
+    waitTime1 = 2000;
+    waitTime2 = 2500;
+    waitTime3 = 3000;
+    
 }
 
 
@@ -45,7 +56,24 @@ void Specimen::draw(){
     }
     mySound.setVolume(vol);
     mesh.draw();
-    //mesh.norm
+    
+    
+    int timeDiff = ofGetElapsedTimeMillis() - timeOpened;
+    
+        if(!nameFade.isFadeIn & (timeDiff >= waitTime1)){
+            nameFade.triggerStart();
+        }
+        else if(!regFade.isFadeIn & (timeDiff >= waitTime2)){
+            regFade.triggerStart();
+        }
+        else if(!dateFade.isFadeIn & (timeDiff >= waitTime3)){
+            dateFade.triggerStart();
+        }
+  
+    
+    regFade.update();
+    dateFade.update();
+    nameFade.update();
 }
 
 
@@ -55,12 +83,25 @@ void Specimen::load(){
     mySound.setLoop(true);
     mySound.play();
     
+    
+    timeOpened = ofGetElapsedTimeMillis();
 }
 
 void Specimen::unload(){
     //model.clear();
     //mesh.clear();
-    mySound.unloadSound(); 
+    mySound.unloadSound();
+    regFade.resetText();
+    dateFade.resetText();
+    nameFade.resetText();
+}
+
+void Specimen::drawText(bool isCentered, int x, int y){
+
+    nameFade.draw(x,y);
+    regFade.draw(x + nameFade.textHeight,y);
+    dateFade.draw(x + nameFade.textHeight + regFade.textHeight,y);
+   
 }
 
 
