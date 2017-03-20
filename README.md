@@ -17,7 +17,7 @@ Only tested on Mac OS 10.11
 
 ## Dependecies
 
-* openFrameworks version 8.4. [Here] (http://openframeworks.cc/download/) are the openFrameworks install instructions. 
+* openFrameworks version 8.4. [Here](http://openframeworks.cc/download/) are the openFrameworks install instructions. 
 * ofxAssimpModelLoader
 * ofxCameraSaveLoad
 * ofxCsv
