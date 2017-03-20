@@ -13,8 +13,18 @@ The Section of Mystery is a custom interactive experience for Carnegie Museum of
 
 ## Dependecies
 
+ofxAssimpModelLoader
+ofxCameraSaveLoad
+ofxCsv
+ofxDmx
+ofxGui
+ofxOpenCv
+ofxXmlSettings
+
 ## Necessary Hardware
+DMX dimmer
+arduino reed switch attached to the door
 
-## License
-
+## Intellectual Property
+The animal sounds were sourced from the [Cornell Macaulay Library](http://macaulaylibrary.org/) and have been removed. I have left two samples of the kind of data it needs for each specimen. The rest of the animal models can be viewed and downloaded from [our sketchFab account](https://sketchfab.com/cmp_innovation_studio/models). 
 
