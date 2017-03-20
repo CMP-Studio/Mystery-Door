@@ -11,7 +11,13 @@ The Section of Mystery is a custom interactive experience for Carnegie Museum of
 
 [Full Process write up](https://studio.carnegiemuseums.org/introducing-the-section-of-mystery-ef883d98b94f#.t13nojwoo)
 
+## Targets
+
+Only tested on Mac OS 10.11
+
 ## Dependecies
+
+* openFrameworks version 8.4. [Here] (http://openframeworks.cc/download/) are the openFrameworks install instructions. 
 * ofxAssimpModelLoader
 * ofxCameraSaveLoad
 * ofxCsv
