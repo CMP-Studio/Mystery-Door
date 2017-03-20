@@ -12,18 +12,17 @@ The Section of Mystery is a custom interactive experience for Carnegie Museum of
 [Full Process write up](https://studio.carnegiemuseums.org/introducing-the-section-of-mystery-ef883d98b94f#.t13nojwoo)
 
 ## Dependecies
-
-ofxAssimpModelLoader
-ofxCameraSaveLoad
-ofxCsv
-ofxDmx
-ofxGui
-ofxOpenCv
-ofxXmlSettings
+* ofxAssimpModelLoader
+* ofxCameraSaveLoad
+* ofxCsv
+* ofxDmx
+* ofxGui
+* ofxOpenCv
+* ofxXmlSettings
 
 ## Necessary Hardware
-DMX dimmer
-arduino reed switch attached to the door
+* DMX dimmer
+* arduino reed switch attached to the door
 
 ## Intellectual Property
 The animal sounds were sourced from the [Cornell Macaulay Library](http://macaulaylibrary.org/) and have been removed. I have left two samples of the kind of data it needs for each specimen. The rest of the animal models can be viewed and downloaded from [our sketchFab account](https://sketchfab.com/cmp_innovation_studio/models). 
