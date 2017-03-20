@@ -1,5 +1,5 @@
 # Mystery-Door
-Code for the mystery door project, an interactive exhibit for the Natural History Museum. All code is written using (openFrameworks)[http://openframeworks.cc/] in C++. 
+Code for the mystery door project, an interactive exhibit for the Natural History Museum. All code is written using [openFrameworks](http://openframeworks.cc/) in C++. 
 
 ## Description 
 
@@ -7,8 +7,9 @@ The Section of Mystery is a custom interactive experience for Carnegie Museum of
 
 ![alt text](https://raw.githubusercontent.com/CMP-Studio/Mystery-Door/f55113dc089fd838d84c4b7ae7c28a61660e95c1/coverImage.jpg )
 
-(Documentation video)[https://vimeo.com/167481467] 
-(Full Process write up)[https://studio.carnegiemuseums.org/introducing-the-section-of-mystery-ef883d98b94f#.t13nojwoo]
+[Documentation video](https://vimeo.com/167481467) 
+
+[Full Process write up](https://studio.carnegiemuseums.org/introducing-the-section-of-mystery-ef883d98b94f#.t13nojwoo)
 
 ## Dependecies
 
