@@ -3,29 +3,38 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+  
+    
+    string doop = "hello world";
+    ofLog() << doop.size();
+    ofLog() << doop[2];
     
     // set up for loading screen
     isLoadedScreen = false;
     isLoadingModels = false;
-    
+    //ofGetElapsedTimeMillis()
     // load in analystics
     analytics.loadFile(ofToDataPath("analytics.csv"));
- 
+    
+    ofDisableArbTex();
     // So the 3D models work well in the lighting
     glEnable(GL_DEPTH_TEST);
     ofEnableSeparateSpecularLight();
-    
+   
     // set up lights
     bulb1.setup(1);
-    //bulb2.setup(2);
+    bulb2.setup(2);
     bulb1.dmx.connect("tty.usbserial-EN175083");
     
     
     //load things
     ofxLoadCamera(cam, "ofEasyCamSettings");
-    font.loadFont("PT.ttf", 20);
-    
+    font.load("PC.ttf", 20);
+    //cam.setTarget(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, 0));
     //gui setup
+    ofSetFullscreen(true);
+    
+    //rotationOfModel.list
     gui.setup();
     gui.add(vol.setup("vol_door_open",.5,0,1));
     gui.add(volClosed.setup("vol_door_closed",.5,0,1));
@@ -34,16 +43,24 @@ void ofApp::setup(){
     gui.add(allowCameraInput.setup("camera_input", false));
     gui.add(realLightMin.setup("real_light_min",0,0,255));
     gui.add(realLightMax.setup("real_light_max",255,0,255));
+    gui.add(posOfText.setup("position of the text",ofVec2f(20,20),ofVec2f(0,0),ofVec2f(ofGetHeight()*2,ofGetWidth()*2)));
+    gui.add(widthHeightOfText.setup("width height of text",ofVec2f(20,20),ofVec2f(0,0),ofVec2f(ofGetHeight(),ofGetWidth())));
+    gui.add(rotationOfModel.set("Rotation of Model", ofVec3f(0,0,0), ofVec3f(0,0,0), ofVec3f(360,360,360)));
+    gui.add(scaleOfModel.set("Scale of Model", 1, 0, 10));
+    gui.add(posOfModel.set("Pos of Model", ofVec2f(ofGetWidth()/2, ofGetHeight()/2), ofVec2f(0,0), ofVec2f(ofGetWidth(),ofGetHeight()*1.5)));
     hideGui=true;
     gui.loadFromFile("settings.xml");
-    
+    rotationOfModel.addListener(this, &ofApp::rotationOfModelChanged);
+    scaleOfModel.addListener(this, &ofApp::scaleOfModelChanged);
+    posOfModel.addListener(this, &ofApp::posOfModelChanged);
     //arduino
-	ard.connect("/dev/cu.usbmodem1451", 57600);
+    
+	ard.connect("/dev/cu.usbmodem1461", 57600);
 	ofAddListener(ard.EInitialized, this, &ofApp::setupArduino);
 	bSetupArduino	= false;
     
     // materials for the text and the model. Changes their coloring and how it is effected by the lights
-    //materialDrawText.setEmissiveColor(ofFloatColor(1,1,1));
+    materialDrawText.setEmissiveColor(ofFloatColor(1,1,1));
     
     
     
@@ -53,14 +70,47 @@ void ofApp::setup(){
     
     // light so that the gui is always in full brightness
     guiLight.setAmbientColor(ofFloatColor(1,1,1));
+    
+    waitToFadeText = 1500;
+    startWaitToFadeText = 0;
+    
+    fadeLabelPercent =0;
+    
+    ofHideCursor();
+    
+    
+}
+
+void ofApp::populateVector(){
+    int size = animals.size();
+    for(int i =0; i< size; i++){
+        randomIndices.push_back(i);
+    }
+}
+
+void ofApp::rotationOfModelChanged(ofVec3f & rotation){
+    ofLog() << rotation;
+    animals.at(animalPos).rotateModel(rotation); 
+    
+}
+
+void ofApp::scaleOfModelChanged(float & scale){
+    animals.at(animalPos).scaleModel(scale);
+}
+
+void ofApp::posOfModelChanged(ofVec2f & pos){
+    animals.at(animalPos).positionModel(pos);
 }
 
 
 void ofApp::loadModels(){
     // finds all files in the data folder with the ply extension.
     ofDirectory dir("");
-    dir.allowExt("ply");
+    dir.allowExt("dae");
     dir.listDir();
+    ////oflog() << ofToString(dir.size());
+    //oflog() << "rightHere";
+
     // populates a list of specimen based off the list of ply files
     for(int i=0; i<dir.size(); i++){
         Specimen temp = *new Specimen();
@@ -68,24 +118,51 @@ void ofApp::loadModels(){
         animals.push_back(temp);
     }
     
+    if(animals.size()>0){
     animalPos =0;
     animals.at(animalPos).load();
     animals.at(0).vol = volClosed;
     animals.at(0).drawTex = textureDraw;
+    animals.at(0).drift = drift;
+        if(allowCameraInput){
+            cam.enableMouseInput();
+        }
+        else{
+            cam.disableMouseInput();
+        }
+    }
     isLoadingModels = true;
+    populateVector();
+    
+    float currentScale = animals.at(animalPos).getScale();
+    scaleOfModel.set(currentScale);
+    ofVec3f rot = animals.at(animalPos).currRot;
+    rotationOfModel.set(rot);
+    doorOpened();
+    bulb1.dmxLightMin = realLightMin;
+    bulb1.dmxLightMax = realLightMax;
+    
+    
+    
+    
 }
 
 
 //--------------------------------------------------------------
 void ofApp::update(){
     
-    
+    //toFade.update();
+    if(ofGetElapsedTimeMillis()%(100*60*8) <= 30){
+        ofHttpResponse resp = ofLoadURL("http://studiostatus.carnegiemuseums.org/ping/mystery-door");
+    }
+   
     
     if(isLoadingModels){
         updateArduino();
         if(!hideGui){
-        animals.at(0).drawTex = textureDraw;
-        animals.at(0).drift = drift;
+            ofShowCursor();
+        //animals.at(0).drawTex = textureDraw;
+        animals.at(animalPos).drift = drift;
         if(allowCameraInput){
             cam.enableMouseInput();
         }
@@ -95,13 +172,21 @@ void ofApp::update(){
             bulb1.dmxLightMin = realLightMin;
             bulb1.dmxLightMax = realLightMax;
         }
+        else{
+            ofHideCursor();
+        }
+
         bulb1.updateLights();
-        bulb1.dmx.update(); 
-        //bulb2.updateLights();
+        bulb2.updateLights();
+        bulb1.dmx.update();
+        fadeLabelUp();
+        
+       
     }
     else{
     }
-    
+
+
     
 }
 
@@ -115,15 +200,16 @@ void ofApp::setupArduino(const int & version) {
     bSetupArduino = true;
     
     // print firmware name and version to the console
-    ofLogNotice() << ard.getFirmwareName();
-    ofLogNotice() << "firmata v" << ard.getMajorFirmwareVersion() << "." << ard.getMinorFirmwareVersion();
+    //oflogNotice() << ard.getFirmwareName();
+    //oflogNotice() << "firmata v" << ard.getMajorFirmwareVersion() << "." << ard.getMinorFirmwareVersion();
     
-
     // set pins D2 and A5 to digital input
     ard.sendDigitalPinMode(2, ARD_INPUT);
 	
     // Listen for changes on the digital and analog pins
     ofAddListener(ard.EDigitalPinChanged, this, &ofApp::digitalPinChanged);
+    ofLog()<<"setup arduino!";
+    
 }
 
 //--------------------------------------------------------------
@@ -138,10 +224,7 @@ void ofApp::updateArduino(){
 
 
 void ofApp::digitalPinChanged(const int & pinNum) {
-    // do something with the digital input. here we're simply going to print the pin number and
-    // value to the screen each time it changes
-    ofLog() << "digital pin: " + ofToString(pinNum) + " = " + ofToString(ard.getDigital(pinNum));
-    // 0 is opened
+
     if(ard.getDigital(pinNum) ==0){
         doorOpened();
     }
@@ -157,14 +240,17 @@ void ofApp::digitalPinChanged(const int & pinNum) {
 void ofApp::doorOpened(){
     bulb1.fadePercent =0;
     bulb1.isFadeOn = true;
-    //bulb2.fadePercent =0;
-    //bulb2.isFadeOn = true;
-    animals.at(0).vol = vol;
-
+    
+    startWaitToFadeText = ofGetElapsedTimeMillis();
+    
+    animals.at(animalPos).vol = vol;
+    animals.at(animalPos).triggerStartText();
+    bulb1.isClosed = false;
 }
 
 
 void ofApp::doorClosed(){
+    fadeLabelPercent =0;
     animals.at(animalPos).unload();
     int row = analytics.numRows;
     analytics.setString(row, 0, "closed");
@@ -172,58 +258,116 @@ void ofApp::doorClosed(){
     analytics.setString(row, 2, animals.at(animalPos).commonName);
     //analytics.saveFile(ofToDataPath("analytics.csv"));
     
+   // animalPos = int(round(ofRandom(-.5,animals.size()-.5)));
+    
+    /*
     if(animalPos < animals.size()-1){
         animalPos++;
     }
     else{
         animalPos =0;
     }
+     */
+    
+    
+    if(randomIndices.size() > 0){
+        int num = ofRandom(randomIndices.size()-1);
+        animalPos = randomIndices.at(num);
+        randomIndices.erase(randomIndices.begin() + num);
+    }
+    else{
+        populateVector();
+        int num = ofRandom(randomIndices.size()-1);
+        animalPos = randomIndices.at(num);
+        randomIndices.erase(randomIndices.begin() + num);
+    }
+    
     animals.at(animalPos).load();
+    
+    // change the gui to the correct position..
+    float currentScale = animals.at(animalPos).getScale();
+    scaleOfModel.set(currentScale);
+    ofVec3f rot = animals.at(animalPos).currRot;
+    rotationOfModel.set(rot);
+    ofVec2f pos = animals.at(animalPos).currPosition;
+    posOfModel = pos; 
+    
     bulb1.fadePercent =0;
+    bulb1.isClosed = true;
+    bulb1.updateTarget(); 
+    
+    //bulb2.fadePercent =0;
+    //bulb2.isClosed = true;
     
     int row2 = analytics.numRows;
     analytics.setString(row2, 0, "opened");
     analytics.setString(row2, 1, ofGetTimestampString());
     analytics.setString(row2, 2, animals.at(animalPos).commonName);
     analytics.saveFile(ofToDataPath("analytics.csv"));
-    animals.at(0).vol = volClosed;
-    
+    animals.at(animalPos).vol = volClosed;
 }
 
 void ofApp::draw(){
     
     ofBackground(0);
+    //materialDrawText.begin();
+    //toFade.draw(0,0);
+    //materialDrawText.end();
+
     if(isLoadingModels){
     
+     
         
-        bulb1.enable();
-        //bulb2.enable();
+     bulb1.enable();
     cam.begin();
-    materialModel.begin();
-        animals.at(animalPos).draw(); 
-    materialModel.end();
-    cam.end();
-    
-    materialDrawText.begin();
-        animals.at(animalPos).drawText(false, 10, 10);
-    materialDrawText.end();
-        bulb1.disable();
-        //bulb2.disable();
         
+        //light.enable();
+        ofPushMatrix();
+        animals.at(animalPos).draw();
+        ofPopMatrix(); 
+        //light.disable();
+        
+    cam.end();
+        bulb1.disable();
+        
+       
+        
+        
+
     if(!hideGui){
-        guiLight.enable();
+        
+        ofDisableLighting();
         ofDisableDepthTest();
         ofDisableSeparateSpecularLight();
         gui.draw();
         bulb1.drawGui();
-        //bulb2.drawGui();
+        bulb2.drawGui();
         ofEnableSeparateSpecularLight();
         ofEnableDepthTest();
-        guiLight.disable();
+        //guiLight.disable();
+        ofEnableLighting();
+        
     }
+        
+        bulb2.enable();
+        //materialDrawText.begin();
+        ofDisableDepthTest();
+        //museum label
+        //ofSetColor(0);
+        //ofSetColor(fadeLabelPercent*255, fadeLabelPercent*255, fadeLabelPercent*255);
+        //ofSetColor(255,0,0);
+        
+        //ofDrawRectangle(posOfText->x-20, posOfText->y-20,widthHeightOfText->x, widthHeightOfText->y);
+        //ofSetColor(255);
+        animals.at(animalPos).drawText(false, posOfText->x, posOfText->y);
+        
+        //materialDrawText.end();
+        ofEnableDepthTest();
+        
+        bulb2.disable();
     
-    
-    ofEllipse(0,0,30,30);
+    //ofDrawEllipse(0,0,30,30);
+        
     }
     else if (!isLoadedScreen) {
         drawText("loading models... Please wait", ofGetWidth()/2,  ofGetHeight()/2, true);
@@ -233,8 +377,6 @@ void ofApp::draw(){
         drawText("loading models... Please wait", ofGetWidth()/2,  ofGetHeight()/2, false);
         loadModels();
     }
-    
-  
 }
 
 void ofApp::drawText(string text, int x, int y, bool isCentered){
@@ -257,11 +399,15 @@ void ofApp::drawText(string text, int x, int y, bool isCentered){
     }
 }
 
+
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
    
+    //toFade.triggerStart();
     if (key =='s'){
         doorClosed();
+    }
+    if (key =='d'){
         doorOpened();
     }
     if (key =='h'){
@@ -270,9 +416,23 @@ void ofApp::keyPressed(int key){
     
 }
 
+void ofApp::fadeLabelUp(){
+    
+    if ((fadeLabelPercent < 1)& !bulb1.isClosed ){
+        ////oflog()<< "hey " <<fadeLabelPercent;
+        fadeLabelPercent += .01;
+    }
+    //materialDrawText.setEmissiveColor(ofFloatColor(fadeLabelPercent,fadeLabelPercent,fadeLabelPercent));
+    //materialDrawText.setEmissiveColor(ofFloatColor(0,0,0));
+}
+
+
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-
+    if(key == 't'){
+        animals.at(animalPos).saveAnimalSettings(); 
+        
+    }
 }
 
 //--------------------------------------------------------------
@@ -316,7 +476,8 @@ void ofApp::exit(){
     ofxSaveCamera(cam, "ofEasyCamSettings");
     gui.saveToFile("settings.xml");
     bulb1.saveGui();
-    //bulb2.saveGui();
+    bulb2.saveGui();
+    bulb1.dmx.setLevel(bulb1.uniqueID, 0);
 }
 
 vector<string> ofApp::split(const std::string &s, char delim) {

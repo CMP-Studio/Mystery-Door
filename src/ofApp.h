@@ -29,8 +29,10 @@ public:
     
     void doorOpened();
     void doorClosed();
+    void fadeLabelUp(); 
     
-    void textureChanged(); 
+    void textureChanged();
+    void populateVector(); 
     
     vector<string> split(const std::string &s, char delim);
     
@@ -69,12 +71,35 @@ public:
     ofMaterial materialModel;
     ofxIntSlider realLightMin;
     ofxIntSlider realLightMax;
+    ofxVec2Slider posOfText;
+    ofxVec2Slider widthHeightOfText;
+    ofxIntSlider fontSize;
+    //ofxVec3Slider rotationOfModel;
+    ofParameter<ofVec3f> rotationOfModel;
+    ofParameter<float> scaleOfModel;
+    ofParameter<ofVec2f> posOfModel;
     
+    void rotationOfModelChanged(ofVec3f & rotation);
+    void scaleOfModelChanged(float & scale);
+    void posOfModelChanged(ofVec2f & pos);
+
     
+    int waitToFadeText;
+    int startWaitToFadeText;
+    
+    float fadeLabelPercent;
+    ofLight light;
+    
+    fadeTextIn loadingText;
+    
+    //vector full of animal indices
+    vector<int> randomIndices;
     
 private:
     void setupArduino(const int & version);
     void digitalPinChanged(const int & pinNum);
     void updateArduino();
+    
+    
 
 };

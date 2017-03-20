@@ -16,7 +16,6 @@ public:
     static ofxDmx dmx;
     static int dmxLightMin;
     static int dmxLightMax;
-    
     void setup(int ID);
     void updateLights();
     void drawGui();
@@ -28,26 +27,25 @@ public:
     void saveGui();
     Boolean isFlicker;
     Boolean isFadeOn;
+    Boolean isClosed;
     float fadePercent; 
     
+    void updateTarget();
+    int uniqueID;
+    
 private:
+    
     float noiseSeed;
     
-    int uniqueID; 
-    
     ofLight light;
-
-    ofxLabel label; 
+    ofLight lightDouble;
+    ofxLabel label;
     ofxPanel lightGui;
-
     ofxColorSlider colorAmb;
     ofxColorSlider colorSpec;
     ofxColorSlider colorDiff;
     
-    ofxIntSlider posX;
-    ofxIntSlider posY;
-    ofxIntSlider posZ;
-    
+    ofxVec3Slider pos;
     ofxToggle drawLight;
     
     ofxFloatSlider minimumFlicker;
@@ -55,4 +53,10 @@ private:
     ofxFloatSlider speedOfFlicker;
     ofxFloatSlider speedOfFade;
     ofxToggle smoothFlicker;
+
+    
+    // this is the target it should reach so that there isn't a huge jump when it goes from fading to
+    //flickering
+    float targetBrightFadeToo;
+    float brightFactor;
 };

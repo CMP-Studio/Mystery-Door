@@ -15,10 +15,14 @@ int Lights::dmxLightMax =255;
 
 void Lights::setup(int ID){
     light.setPointLight();
+    lightDouble.setPointLight();
     //light.setDirectional();
     light.setPosition(0, 20, 20);
+    lightDouble.setPosition(0, 20, 20);
     //light.setAmbientColor(ofFloatColor(0,0,1));
     light.enable();
+    lightDouble.enable();
+    //light.disable();
     
     uniqueID = ID;
     
@@ -27,16 +31,13 @@ void Lights::setup(int ID){
     
     lightGui.add(drawLight.setup("draw light", false));
     
-    lightGui.add(posX.setup("pos x", 0, ofGetWidth(), 0));
-    lightGui.add(posY.setup("pos y", 0, ofGetHeight(), 0));
-    lightGui.add(posZ.setup("pos z", 0, 2000, 0));
-    
+    lightGui.add(pos.setup("pos",ofVec3f(0,0,0),ofVec3f(ofGetWidth()*-2,ofGetHeight()*-02,-3000),ofVec3f(ofGetWidth()*2,ofGetHeight()*2,3000)));
     
     lightGui.add(smoothFlicker.setup("Smooth flicker", false));
     lightGui.add(minimumFlicker.setup("Min flicker",.5,0,1));
     lightGui.add(maximumFlicker.setup("Max flicker",.5,0,1));
     lightGui.add(speedOfFlicker.setup("Speed of flicker",.5,0,1));
-    lightGui.add(speedOfFade.setup("Speed of fade",.5,0,1));
+    lightGui.add(speedOfFade.setup("Speed of fade",.2,0,.3));
     
     lightGui.add(colorAmb.setup("color ambient", ofColor(100, 100, 140), ofColor(0, 0), ofColor(255, 255)));
     lightGui.add(colorSpec.setup("color Specular", ofColor(100, 100, 140), ofColor(0, 0), ofColor(255, 255)));
@@ -46,6 +47,10 @@ void Lights::setup(int ID){
     isFlicker = true;
     isFadeOn = true;
     fadePercent = 0;
+
+    noiseSeed =0; 
+    targetBrightFadeToo = ofMap(ofNoise(noiseSeed),0,1,minimumFlicker, maximumFlicker);
+    brightFactor =0; 
 }
 
 void Lights::updateLights(){
@@ -55,7 +60,17 @@ void Lights::updateLights(){
     ofColor ca = colorAmb;
     ofColor b = ofColor::black;
     
-    if(isFadeOn){
+    
+    if (isClosed){
+        // the door is closed so turn off all the lights.
+        ca.set(0);
+        cs.set(0);
+        cd.set(0);
+        dmx.setLevel(uniqueID,  dmxLightMin);
+        ofLog()<< "closed !";
+    }
+    else if(isFadeOn){
+        //oflog()<< "fade is on before: " << fadePercent;
         if (fadePercent<1){
             float flickering=0;
             
@@ -64,24 +79,35 @@ void Lights::updateLights(){
                 flickering = ofMap(ofNoise(noiseSeed),0,1,-.2f, .2f);
             }
              */
-        
-            ca.lerp(b, 1-fadePercent + flickering);
-            cs.lerp(b, 1-fadePercent + flickering);
-            cd.lerp(b, 1-fadePercent + flickering);
+            float brightnessForNow = ofMap(fadePercent, 0,1,0,targetBrightFadeToo);
+            ca.lerp(b, 1-brightnessForNow);
+            cs.lerp(b, 1-brightnessForNow);
+            cd.lerp(b, 1-brightnessForNow);
             fadePercent += speedOfFade;
+            //ofLog()<< "brightness for now: " << brightnessForNow;
             
-            dmx.setLevel(uniqueID, float(ofMap(1-fadePercent + flickering, 0, 1, dmxLightMax, dmxLightMin)));
+            float dmxLevel = ofMap(brightnessForNow ,1,0, dmxLightMax, dmxLightMin);
+            //oflog()<< "dmx level during fade " << dmxLevel;
+            dmx.setLevel(uniqueID, dmxLevel);
+            //ofLog()<< "end: " << ;
         }
         else{
             fadePercent=0;
             isFadeOn= false;
+            float brightnessForNow = ofMap(1, 0,1,0,targetBrightFadeToo);
+            ca.lerp(b, 1-brightnessForNow);
+            cs.lerp(b, 1-brightnessForNow);
+            cd.lerp(b, 1-brightnessForNow);
         }
+        //ofLog()<< "speed of fade: " << speedOfFade;
+
         
     }
     else if(isFlicker){
-        float brightFactor;
+        
         if(smoothFlicker){
             brightFactor = ofMap(ofNoise(noiseSeed),0,1,minimumFlicker, maximumFlicker);
+            
             noiseSeed += speedOfFlicker;
         }
         else{
@@ -91,18 +117,32 @@ void Lights::updateLights(){
         //noiseSeed
         //cd.setBrightness(brightFactor);
         //cs.setBrightness(brightFactor);
-        ca.lerp(b, brightFactor);
-        cs.lerp(b, brightFactor);
-        cd.lerp(b, brightFactor);
-        dmx.setLevel(uniqueID, float(ofMap(brightFactor, 0, 1,dmxLightMax, dmxLightMin)));
+        ca.lerp(b, 1-brightFactor);
+        cs.lerp(b, 1-brightFactor);
+        cd.lerp(b, 1-brightFactor);
+        
+        float dmxLevel = ofMap(brightFactor , 1,0, dmxLightMax, dmxLightMin);
+        //oflog()<< "dmxLightMax " << dmxLightMax;
+        //oflog()<< "bright factor " << brightFactor;
+        //oflog()<< "dmx level during flicker " << dmxLevel;
+        dmx.setLevel(uniqueID, dmxLevel);
+        
     }
+
     
     //ca=b;
-    light.setPosition(posX, posY, posZ);
+    
+    light.setPosition(pos);
     
     light.setDiffuseColor(ofFloatColor(float(cd.r)/255.f, float(cd.g)/255.f, float(cd.b)/255.f));
     light.setSpecularColor(ofFloatColor(float(cs.r)/255.f, float(cs.g)/255.f, float(cs.b)/255.f));
     light.setAmbientColor(ofFloatColor(float(ca.r)/255.f, float(ca.g)/255.f, float(ca.b)/255.f));
+    
+    lightDouble.setPosition(pos);
+    
+    lightDouble.setDiffuseColor(ofFloatColor(float(cd.r)/255.f, float(cd.g)/255.f, float(cd.b)/255.f));
+    lightDouble.setSpecularColor(ofFloatColor(float(cs.r)/255.f, float(cs.g)/255.f, float(cs.b)/255.f));
+    lightDouble.setAmbientColor(ofFloatColor(float(ca.r)/255.f, float(ca.g)/255.f, float(ca.b)/255.f));
     
     if(drawLight){
         light.draw(); 
@@ -117,18 +157,24 @@ void Lights::updateLights(){
 
 void Lights::saveGui(){
     //lightGui.sa
-    ofLog()<< "saving";
-    ofLog()<< "light_"+ofToString(uniqueID)+ ".xml";
+    //oflog()<< "saving";
+    //oflog()<< "light_"+ofToString(uniqueID)+ ".xml";
     
     lightGui.saveToFile("light_"+ofToString(uniqueID)+ ".xml");
 }
 
+void Lights::updateTarget(){
+    targetBrightFadeToo = ofMap(ofNoise(noiseSeed),0,1,minimumFlicker, maximumFlicker);
+}
+
 void Lights::enable(){
     light.enable();
+    lightDouble.enable();
 }
 
 void Lights::disable(){
     light.disable();
+    lightDouble.disable();
 }
 
 

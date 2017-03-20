@@ -21,22 +21,30 @@ public:
     int textWidth;
     bool isFadeIn;
     
+    
 private:
+
     ofxCvColorImage original;
     ofxCvGrayscaleImage toBlur;
     ofxCvGrayscaleImage correctSize;
-    ofTrueTypeFont font;
+    ofxCvColorImage testImage;
+    
     ofFbo drawTextin;
     ofPixels tempPix;
-    int padding;
+    float padding;
     
     int fadeTargetDur;
     int fadeLevel;
-    
+    int siz;
     int timeFadeStarted;
     
     void levelToBlur(int blurLevel);
     void peppersGhostThat(string text, int x, int y, ofTrueTypeFont font);
+    
+    string fntFilename;
+    string txt;
+    
+    ofMaterial brightenUp; 
 };
 
 
